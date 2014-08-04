@@ -24,14 +24,20 @@ p.margin {margin: 20px 50% 10%}
 </head>
 <body>
 <div class="page">
-<div class="article">
-	<h1 class="title"> 到底是我帮你，还是你帮我？ </h1>
-<div class="body">
-<audio controls="controls" autoplay="autoplay">
-  <source src="/bgmusic/bgs.mp3" type="audio/mpeg">
-Your browser does not support the audio element.
-</audio>
-<p>文/yihan</p>
+	<div class="article">
+		<h1 class="title"> 到底是我帮你，还是你帮我？ </h1>
+		<div class="body">
+			<script type="text/javascript">
+var midino = Math.floor(Math.random()*3)+1;  
+var midins = ""+midino ;
+document.write('<audio controls="controls" autoplay="autoplay">');
+document.write('<source src="/bgmusic/bgs');
+document.write(midins);
+document.write('.mp3" type="audio/mpeg">');
+document.write('Your browser does not support the audio element.');
+document.write('</audio>')
+			</script>
+			<p>文/yihan</p>
 
 <p><img src="/images/helpme.jpg" alt="alt text" title="help me" /></p>
 
@@ -61,9 +67,9 @@ It is more blessed to give than to receive (Acts 20:35).
 <p>要是你难过，我就来找你帮忙。哈哈，想不到火上浇油和雪中送炭只有咫尺之隔。</p>
 <p>31 Jul 2014</p>
 
-</div>
+		</div>
 
-</div>
+	</div>
 </div>
 </body>
 </html>
