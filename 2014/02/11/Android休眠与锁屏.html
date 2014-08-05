@@ -21,7 +21,6 @@ p.margin {margin: 20px 50% 10%}
 <link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
  -->
 <link rel="stylesheet" href="/css/normalize.css" type="text/css" media="screen, projection" />
-<link rel="stylesheet" href="/css/pygments.css">
 </head>
 <body>
 <div class="page">
@@ -38,36 +37,60 @@ document.write('.mp3" type="audio/mpeg">');
 document.write('Your browser does not support the audio element.');
 document.write('</audio>')
 			</script>
-			<div class="md-section-divider"></div>
-
-<p>要禁用Android的锁屏,我们只要在程序中用代码实现。方法如下：  </p>
+			<p>要禁用Android的锁屏,我们只要在程序中用代码实现。方法如下：  </p>
 
 <ul>
-<li>方法一 </li>
+  <li>方法一 </li>
 </ul>
 
-<div class="md-section-divider"></div>
-
-<pre class="prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><code class="language-java"><span class="pln">getWindow</span><span class="pun">().</span><span class="pln">setFlags</span><span class="pun">(</span><span class="typ">WindowManager</span><span class="pun">.</span><span class="typ">LayoutParams</span><span class="pun">.</span><span class="pln">FLAG_KEEP_SCREEN_ON</span><span class="pun">,</span><span class="pln"> </span><span class="typ">WindowManager</span><span class="pun">.</span><span class="typ">LayoutParams</span><span class="pun">.</span><span class="pln">FLAG_KEEP_SCREEN_ON</span><span class="pun">);</span><span class="pln"> setContentView</span><span class="pun">(</span><span class="pln">R</span><span class="pun">.</span><span class="pln">layout</span><span class="pun">.</span><span class="pln">main</span><span class="pun">);</span><span class="pln"> </span></code></li></ol></pre>
+<p>getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); setContentView(R.layout.main); </p>
 
 <ul>
-<li>方法二 </li>
+  <li>方法二 </li>
 </ul>
 
-<div class="md-section-divider"></div>
+<p>@Override<br />
+protected void onResume() {<br />
+	super.onResume();<br />
+	pManager = ((PowerManager) getSystemService(POWER_SERVICE));<br />
+	mWakeLock = pManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK<br />
+			| PowerManager.ON_AFTER_RELEASE, TAG);<br />
+	mWakeLock.acquire();<br />
+}  </p>
 
-<pre class="prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><code class="language-java"><span class="lit">@Override</span><span class="pln">  </span></code></li><li class="L1"><code class="language-java"><span class="kwd">protected</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> onResume</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">  </span></code></li><li class="L2"><code class="language-java"><span class="pln">    </span><span class="kwd">super</span><span class="pun">.</span><span class="pln">onResume</span><span class="pun">();</span><span class="pln">  </span></code></li><li class="L3"><code class="language-java"><span class="pln">    pManager </span><span class="pun">=</span><span class="pln"> </span><span class="pun">((</span><span class="typ">PowerManager</span><span class="pun">)</span><span class="pln"> getSystemService</span><span class="pun">(</span><span class="pln">POWER_SERVICE</span><span class="pun">));</span><span class="pln">  </span></code></li><li class="L4"><code class="language-java"><span class="pln">    mWakeLock </span><span class="pun">=</span><span class="pln"> pManager</span><span class="pun">.</span><span class="pln">newWakeLock</span><span class="pun">(</span><span class="typ">PowerManager</span><span class="pun">.</span><span class="pln">SCREEN_BRIGHT_WAKE_LOCK  </span></code></li><li class="L5"><code class="language-java"><span class="pln">            </span><span class="pun">|</span><span class="pln"> </span><span class="typ">PowerManager</span><span class="pun">.</span><span class="pln">ON_AFTER_RELEASE</span><span class="pun">,</span><span class="pln"> TAG</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L6"><code class="language-java"><span class="pln">    mWakeLock</span><span class="pun">.</span><span class="pln">acquire</span><span class="pun">();</span><span class="pln">  </span></code></li><li class="L7"><code class="language-java"><span class="pun">}</span><span class="pln">  </span></code></li><li class="L8"><code class="language-java"></code></li><li class="L9"><code class="language-java"><span class="lit">@Override</span><span class="pln">  </span></code></li><li class="L0"><code class="language-java"><span class="kwd">protected</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> onPause</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{</span><span class="pln">  </span></code></li><li class="L1"><code class="language-java"><span class="pln">    </span><span class="kwd">super</span><span class="pun">.</span><span class="pln">onPause</span><span class="pun">();</span><span class="pln">  </span></code></li><li class="L2"><code class="language-java"></code></li><li class="L3"><code class="language-java"><span class="pln">    </span><span class="kwd">if</span><span class="pun">(</span><span class="kwd">null</span><span class="pln"> </span><span class="pun">!=</span><span class="pln"> mWakeLock</span><span class="pun">){</span><span class="pln">  </span></code></li><li class="L4"><code class="language-java"><span class="pln">        mWakeLock</span><span class="pun">.</span><span class="pln">release</span><span class="pun">();</span><span class="pln">  </span></code></li><li class="L5"><code class="language-java"><span class="pln">    </span><span class="pun">}</span><span class="pln">  </span></code></li><li class="L6"><code class="language-java"><span class="pun">}</span></code></li></ol></pre>
+<p>@Override<br />
+protected void onPause() {<br />
+	super.onPause();  </p>
+
+<pre><code>if(null != mWakeLock){  
+	mWakeLock.release();  
+}   }
+</code></pre>
 
 <ul>
-<li>方法三  </li>
+  <li>方法三  </li>
 </ul>
 
-<div class="md-section-divider"></div>
+<p>public void unLock(){<br />
+	mContentResolver = getContentResolver();  </p>
 
-<pre class="prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><code class="language-java"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> unLock</span><span class="pun">(){</span><span class="pln">  </span></code></li><li class="L1"><code class="language-java"><span class="pln">    mContentResolver </span><span class="pun">=</span><span class="pln"> getContentResolver</span><span class="pun">();</span><span class="pln">  </span></code></li><li class="L2"><code class="language-java"></code></li><li class="L3"><code class="language-java"><span class="pln">    </span><span class="com">//不建议使用  </span></code></li><li class="L4"><code class="language-java"><span class="pln">    </span><span class="com">//setLockPatternEnabled(android.provider.Settings.System.LOCK_PATTERN_ENABLED,false);  </span></code></li><li class="L5"><code class="language-java"></code></li><li class="L6"><code class="language-java"><span class="pln">    </span><span class="com">//推荐使用  </span></code></li><li class="L7"><code class="language-java"><span class="pln">    setLockPatternEnabled</span><span class="pun">(</span><span class="pln">android</span><span class="pun">.</span><span class="pln">provider</span><span class="pun">.</span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">Secure</span><span class="pun">.</span><span class="pln">LOCK_PATTERN_ENABLED</span><span class="pun">,</span><span class="kwd">false</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L8"><code class="language-java"><span class="pun">}</span><span class="pln">  </span></code></li><li class="L9"><code class="language-java"></code></li><li class="L0"><code class="language-java"><span class="kwd">private</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> setLockPatternEnabled</span><span class="pun">(</span><span class="typ">String</span><span class="pln"> systemSettingKey</span><span class="pun">,</span><span class="pln"> </span><span class="kwd">boolean</span><span class="pln"> enabled</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">  </span></code></li><li class="L1"><code class="language-java"><span class="pln">    </span><span class="com">//不建议使用  </span></code></li><li class="L2"><code class="language-java"><span class="pln">    </span><span class="com">//android.provider.Settings.System.putInt(mContentResolver,systemSettingKey, enabled ? 1 : 0);  </span></code></li><li class="L3"><code class="language-java"></code></li><li class="L4"><code class="language-java"><span class="pln">    </span><span class="com">//推荐使用  </span></code></li><li class="L5"><code class="language-java"><span class="pln">    android</span><span class="pun">.</span><span class="pln">provider</span><span class="pun">.</span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">Secure</span><span class="pun">.</span><span class="pln">putInt</span><span class="pun">(</span><span class="pln">mContentResolver</span><span class="pun">,</span><span class="pln"> systemSettingKey</span><span class="pun">,</span><span class="pln">enabled </span><span class="pun">?</span><span class="pln"> </span><span class="lit">1</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L6"><code class="language-java"><span class="pun">}</span><span class="pln">  </span></code></li><li class="L7"><code class="language-java"><span class="com">//但注意要加权限AndroidManifest.xml文件中加入  </span></code></li><li class="L8"><code class="language-java"><span class="com">//&lt;uses-permission android:name="android.permission.WRITE_SETTINGS" /&gt;  </span></code></li><li class="L9"><code class="language-java"><span class="com">//还要特别注意的是要加入 android:sharedUserId="android.uid.system"，但有一个问题，  </span></code></li><li class="L0"><code class="language-java"><span class="com">//如果加入了sharedUserId后就不能使用eclipse编译了，一定要手动通过 mm -B进行编译，然后把apk install到模拟器或设备中  </span></code></li></ol></pre>
+<pre><code>//不建议使用  
+//setLockPatternEnabled(android.provider.Settings.System.LOCK_PATTERN_ENABLED,false);  
+
+//推荐使用  
+setLockPatternEnabled(android.provider.Settings.Secure.LOCK_PATTERN_ENABLED,false);   }  
+</code></pre>
+
+<p>private void setLockPatternEnabled(String systemSettingKey, boolean enabled) {<br />
+	//不建议使用<br />
+	//android.provider.Settings.System.putInt(mContentResolver,systemSettingKey, enabled ? 1 : 0);  </p>
+
+<pre><code>//推荐使用  
+android.provider.Settings.Secure.putInt(mContentResolver, systemSettingKey,enabled ? 1 : 0);   }   //但注意要加权限AndroidManifest.xml文件中加入   //&lt;uses-permission android:name="android.permission.WRITE_SETTINGS" /&gt;   //还要特别注意的是要加入 android:sharedUserId="android.uid.system"，但有一个问题，   //如果加入了sharedUserId后就不能使用eclipse编译了，一定要手动通过 mm -B进行编译，然后把apk install到模拟器或设备中  
+</code></pre>
 
 <ul>
-<li>禁用系统的锁频功能，这方法不建议使用，只有在适当的环境下适当使用既可</li>
+  <li>禁用系统的锁频功能，这方法不建议使用，只有在适当的环境下适当使用既可</li>
 </ul>
 
 <p>Android系统的锁屏时间存放在Setting数据库中，字段为Settings.System.SCREEN_OFF_TIMEOUT。我们可以查看SettingsProvider源码，查看如下文件的源码如下：</p>
@@ -76,9 +99,44 @@ document.write('</audio>')
 
 <p>查看loadSystemSettings()函数的代码如下：</p>
 
-<div class="md-section-divider"></div>
-
-<pre class="prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><code class="language-java"><span class="kwd">private</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> loadSystemSettings</span><span class="pun">(</span><span class="typ">SQLiteDatabase</span><span class="pln"> db</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">  </span></code></li><li class="L1"><code class="language-java"><span class="pln">    </span><span class="typ">SQLiteStatement</span><span class="pln"> stmt </span><span class="pun">=</span><span class="pln"> db</span><span class="pun">.</span><span class="pln">compileStatement</span><span class="pun">(</span><span class="str">"INSERT OR IGNORE INTO system(name,value)"</span><span class="pln">  </span></code></li><li class="L2"><code class="language-java"><span class="pln">            </span><span class="pun">+</span><span class="pln"> </span><span class="str">" VALUES(?,?);"</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L3"><code class="language-java"><span class="pln">    </span><span class="typ">Resources</span><span class="pln"> r </span><span class="pun">=</span><span class="pln"> mContext</span><span class="pun">.</span><span class="pln">getResources</span><span class="pun">();</span><span class="pln">  </span></code></li><li class="L4"><code class="language-java"><span class="pln">    loadBooleanSetting</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">System</span><span class="pun">.</span><span class="pln">DIM_SCREEN</span><span class="pun">,</span><span class="pln">  </span></code></li><li class="L5"><code class="language-java"><span class="pln">            R</span><span class="pun">.</span><span class="pln">bool</span><span class="pun">.</span><span class="pln">def_dim_screen</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L6"><code class="language-java"><span class="pln">    loadSetting</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">System</span><span class="pun">.</span><span class="pln">STAY_ON_WHILE_PLUGGED_IN</span><span class="pun">,</span><span class="pln">  </span></code></li><li class="L7"><code class="language-java"><span class="pln">            </span><span class="str">"1"</span><span class="pun">.</span><span class="pln">equals</span><span class="pun">(</span><span class="typ">SystemProperties</span><span class="pun">.</span><span class="pln">get</span><span class="pun">(</span><span class="str">"ro.kernel.qemu"</span><span class="pun">))</span><span class="pln"> </span><span class="pun">?</span><span class="pln"> </span><span class="lit">1</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="lit">0</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L8"><code class="language-java"><span class="pln">    loadIntegerSetting</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">System</span><span class="pun">.</span><span class="pln">SCREEN_OFF_TIMEOUT</span><span class="pun">,</span><span class="pln">  </span></code></li><li class="L9"><code class="language-java"><span class="pln">            R</span><span class="pun">.</span><span class="pln">integer</span><span class="pun">.</span><span class="pln">def_screen_off_timeout</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L0"><code class="language-java"><span class="pln">    </span><span class="com">// Set default cdma emergency tone  </span></code></li><li class="L1"><code class="language-java"><span class="pln">    loadSetting</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">System</span><span class="pun">.</span><span class="pln">EMERGENCY_TONE</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L2"><code class="language-java"><span class="pln">    </span><span class="com">// Set default cdma call auto retry  </span></code></li><li class="L3"><code class="language-java"><span class="pln">    loadSetting</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">System</span><span class="pun">.</span><span class="pln">CALL_AUTO_RETRY</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L4"><code class="language-java"><span class="pln">    </span><span class="com">// Set default cdma DTMF type  </span></code></li><li class="L5"><code class="language-java"><span class="pln">    loadSetting</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">System</span><span class="pun">.</span><span class="pln">DTMF_TONE_TYPE_WHEN_DIALING</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L6"><code class="language-java"><span class="pln">    </span><span class="com">// Set default hearing aid  </span></code></li><li class="L7"><code class="language-java"><span class="pln">    loadSetting</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">System</span><span class="pun">.</span><span class="pln">HEARING_AID</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L8"><code class="language-java"><span class="pln">    </span><span class="com">// Set default tty mode  </span></code></li><li class="L9"><code class="language-java"><span class="pln">    loadSetting</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">System</span><span class="pun">.</span><span class="pln">TTY_MODE</span><span class="pun">,</span><span class="pln"> </span><span class="lit">0</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L0"><code class="language-java"><span class="pln">    loadBooleanSetting</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">System</span><span class="pun">.</span><span class="pln">AIRPLANE_MODE_ON</span><span class="pun">,</span><span class="pln">  </span></code></li><li class="L1"><code class="language-java"><span class="pln">            R</span><span class="pun">.</span><span class="pln">bool</span><span class="pun">.</span><span class="pln">def_airplane_mode_on</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L2"><code class="language-java"><span class="pln">    loadStringSetting</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">System</span><span class="pun">.</span><span class="pln">AIRPLANE_MODE_RADIOS</span><span class="pun">,</span><span class="pln">  </span></code></li><li class="L3"><code class="language-java"><span class="pln">            R</span><span class="pun">.</span><span class="pln">string</span><span class="pun">.</span><span class="pln">def_airplane_mode_radios</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L4"><code class="language-java"><span class="pln">    loadStringSetting</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">System</span><span class="pun">.</span><span class="pln">AIRPLANE_MODE_TOGGLEABLE_RADIOS</span><span class="pun">,</span><span class="pln">  </span></code></li><li class="L5"><code class="language-java"><span class="pln">            R</span><span class="pun">.</span><span class="pln">string</span><span class="pun">.</span><span class="pln">airplane_mode_toggleable_radios</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L6"><code class="language-java"><span class="pln">    loadBooleanSetting</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">System</span><span class="pun">.</span><span class="pln">AUTO_TIME</span><span class="pun">,</span><span class="pln">  </span></code></li><li class="L7"><code class="language-java"><span class="pln">            R</span><span class="pun">.</span><span class="pln">bool</span><span class="pun">.</span><span class="pln">def_auto_time</span><span class="pun">);</span><span class="pln"> </span><span class="com">// Sync time to NITZ  </span></code></li><li class="L8"><code class="language-java"><span class="pln">    loadIntegerSetting</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">System</span><span class="pun">.</span><span class="pln">SCREEN_BRIGHTNESS</span><span class="pun">,</span><span class="pln">  </span></code></li><li class="L9"><code class="language-java"><span class="pln">            R</span><span class="pun">.</span><span class="pln">integer</span><span class="pun">.</span><span class="pln">def_screen_brightness</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L0"><code class="language-java"><span class="pln">    loadBooleanSetting</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">System</span><span class="pun">.</span><span class="pln">SCREEN_BRIGHTNESS_MODE</span><span class="pun">,</span><span class="pln">  </span></code></li><li class="L1"><code class="language-java"><span class="pln">            R</span><span class="pun">.</span><span class="pln">bool</span><span class="pun">.</span><span class="pln">def_screen_brightness_automatic_mode</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L2"><code class="language-java"><span class="pln">    loadDefaultAnimationSettings</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L3"><code class="language-java"><span class="pln">    loadBooleanSetting</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">,</span><span class="pln"> </span><span class="typ">Settings</span><span class="pun">.</span><span class="typ">System</span><span class="pun">.</span><span class="pln">ACCELEROMETER_ROTATION</span><span class="pun">,</span><span class="pln">  </span></code></li><li class="L4"><code class="language-java"><span class="pln">            R</span><span class="pun">.</span><span class="pln">bool</span><span class="pun">.</span><span class="pln">def_accelerometer_rotation</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L5"><code class="language-java"><span class="pln">    loadDefaultHapticSettings</span><span class="pun">(</span><span class="pln">stmt</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L6"><code class="language-java"><span class="pln">    stmt</span><span class="pun">.</span><span class="pln">close</span><span class="pun">();</span><span class="pln">  </span></code></li><li class="L7"><code class="language-java"><span class="pun">}</span><span class="pln">  </span></code></li></ol></pre>
+<p>private void loadSystemSettings(SQLiteDatabase db) {<br />
+	SQLiteStatement stmt = db.compileStatement(“INSERT OR IGNORE INTO system(name,value)”<br />
+			+ “ VALUES(?,?);”);<br />
+	Resources r = mContext.getResources();<br />
+	loadBooleanSetting(stmt, Settings.System.DIM_SCREEN,<br />
+			R.bool.def_dim_screen);<br />
+	loadSetting(stmt, Settings.System.STAY_ON_WHILE_PLUGGED_IN,<br />
+			“1”.equals(SystemProperties.get(“ro.kernel.qemu”)) ? 1 : 0);<br />
+	loadIntegerSetting(stmt, Settings.System.SCREEN_OFF_TIMEOUT,<br />
+			R.integer.def_screen_off_timeout);<br />
+	// Set default cdma emergency tone<br />
+	loadSetting(stmt, Settings.System.EMERGENCY_TONE, 0);<br />
+	// Set default cdma call auto retry<br />
+	loadSetting(stmt, Settings.System.CALL_AUTO_RETRY, 0);<br />
+	// Set default cdma DTMF type<br />
+	loadSetting(stmt, Settings.System.DTMF_TONE_TYPE_WHEN_DIALING, 0);<br />
+	// Set default hearing aid<br />
+	loadSetting(stmt, Settings.System.HEARING_AID, 0);<br />
+	// Set default tty mode<br />
+	loadSetting(stmt, Settings.System.TTY_MODE, 0);<br />
+	loadBooleanSetting(stmt, Settings.System.AIRPLANE_MODE_ON,<br />
+			R.bool.def_airplane_mode_on);<br />
+	loadStringSetting(stmt, Settings.System.AIRPLANE_MODE_RADIOS,<br />
+			R.string.def_airplane_mode_radios);<br />
+	loadStringSetting(stmt, Settings.System.AIRPLANE_MODE_TOGGLEABLE_RADIOS,<br />
+			R.string.airplane_mode_toggleable_radios);<br />
+	loadBooleanSetting(stmt, Settings.System.AUTO_TIME,<br />
+			R.bool.def_auto_time); // Sync time to NITZ<br />
+	loadIntegerSetting(stmt, Settings.System.SCREEN_BRIGHTNESS,<br />
+			R.integer.def_screen_brightness);<br />
+	loadBooleanSetting(stmt, Settings.System.SCREEN_BRIGHTNESS_MODE,<br />
+			R.bool.def_screen_brightness_automatic_mode);<br />
+	loadDefaultAnimationSettings(stmt);<br />
+	loadBooleanSetting(stmt, Settings.System.ACCELEROMETER_ROTATION,<br />
+			R.bool.def_accelerometer_rotation);<br />
+	loadDefaultHapticSettings(stmt);<br />
+	stmt.close();<br />
+}  </p>
 
 <p>Settings.System.SCREEN_OFF_TIMEOUT没有初始化的话（系统首次启动，这个字段肯定是没 有初始化的），系统将会利用资源中的R.integer.def_screen_off_timeout来初始化。我们为了让系统永不锁屏，只需要把资源 R.integer.def_screen_off_timeout设为-1即可。查看文件在这里：</p>
 
@@ -86,9 +144,7 @@ document.write('</audio>')
 
 <p>可以找到R.integer.def_screen_off_timeout的定义 </p>
 
-<div class="md-section-divider"></div>
-
-<pre class="prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><code class="language-java"><span class="pun">&lt;</span><span class="pln">integer name</span><span class="pun">=</span><span class="str">"def_screen_off_timeout"</span><span class="pun">&gt;</span><span class="lit">60000</span><span class="pun">&lt;/</span><span class="pln">integer</span><span class="pun">&gt;</span></code></li></ol></pre>
+<integer name="def_screen_off_timeout">60000</integer>
 
 <p>默认值为60000ms，也就是60s。我们只需要把这个参数改为-1。然后重新编译SettingsProvider模块，就OK了。</p>
 
@@ -100,17 +156,44 @@ document.write('</audio>')
 
 <p>该文件中有一个变量定义如下：</p>
 
-<div class="md-section-divider"></div>
-
-<pre class="prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><code class="language-java"><span class="com">/** </span></code></li><li class="L1"><code class="language-java"><span class="com"> * External apps (like the phone app) can tell us to disable the keygaurd. </span></code></li><li class="L2"><code class="language-java"><span class="com"> */</span><span class="pln">  </span></code></li><li class="L3"><code class="language-java"><span class="kwd">private</span><span class="pln"> </span><span class="kwd">boolean</span><span class="pln"> mExternallyEnabled </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">true</span><span class="pln">  </span></code></li></ol></pre>
+<p>/** 
+ * External apps (like the phone app) can tell us to disable the keygaurd. 
+ */<br />
+private boolean mExternallyEnabled = true  </p>
 
 <p>mExternallyEnabled是用来管理是否开启屏幕锁的关键。默认值是打开屏锁，根据注释可以知道他是希望应用程序来修改这个值，我们可以把这个值改成false就可以了。</p>
 
 <p>有时候我们不想修改这个初始值，那我们看看这个类有没有提供相应的方法来供外部修改这个值的，不出我们所料，看下面这段代码就是的了：</p>
 
-<div class="md-section-divider"></div>
+<p>/** 
+ * Same semantics as {@link WindowManagerPolicy#enableKeyguard}; provide 
+ * a way for external stuff to override normal keyguard behavior.  For instance 
+ * the phone app disables the keyguard when it receives incoming calls. 
+ */<br />
+public void setKeyguardEnabled(boolean enabled) {<br />
+	synchronized (this) {<br />
+		if (DEBUG) Log.d(TAG, “setKeyguardEnabled(“ + enabled + “)”);  </p>
 
-<pre class="prettyprint linenums prettyprinted"><ol class="linenums"><li class="L0"><code class="language-java"><span class="com">/** </span></code></li><li class="L1"><code class="language-java"><span class="com"> * Same semantics as {@link WindowManagerPolicy#enableKeyguard}; provide </span></code></li><li class="L2"><code class="language-java"><span class="com"> * a way for external stuff to override normal keyguard behavior.  For instance </span></code></li><li class="L3"><code class="language-java"><span class="com"> * the phone app disables the keyguard when it receives incoming calls. </span></code></li><li class="L4"><code class="language-java"><span class="com"> */</span><span class="pln">  </span></code></li><li class="L5"><code class="language-java"><span class="kwd">public</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> setKeyguardEnabled</span><span class="pun">(</span><span class="kwd">boolean</span><span class="pln"> enabled</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">  </span></code></li><li class="L6"><code class="language-java"><span class="pln">    </span><span class="kwd">synchronized</span><span class="pln"> </span><span class="pun">(</span><span class="kwd">this</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">  </span></code></li><li class="L7"><code class="language-java"><span class="pln">        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">DEBUG</span><span class="pun">)</span><span class="pln"> </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">d</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"setKeyguardEnabled("</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> enabled </span><span class="pun">+</span><span class="pln"> </span><span class="str">")"</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L8"><code class="language-java"></code></li><li class="L9"><code class="language-java"><span class="pln">        mExternallyEnabled </span><span class="pun">=</span><span class="pln"> enabled</span><span class="pun">;</span><span class="pln">  </span></code></li><li class="L0"><code class="language-java"></code></li><li class="L1"><code class="language-java"><span class="pln">        </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(!</span><span class="pln">enabled </span><span class="pun">&amp;&amp;</span><span class="pln"> mShowing</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">  </span></code></li><li class="L2"><code class="language-java"><span class="pln">            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">mExitSecureCallback </span><span class="pun">!=</span><span class="pln"> </span><span class="kwd">null</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">  </span></code></li><li class="L3"><code class="language-java"><span class="pln">                </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">DEBUG</span><span class="pun">)</span><span class="pln"> </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">d</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"in process of verifyUnlock request, ignoring"</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L4"><code class="language-java"><span class="pln">                </span><span class="com">// we're in the process of handling a request to verify the user  </span></code></li><li class="L5"><code class="language-java"><span class="pln">                </span><span class="com">// can get past the keyguard. ignore extraneous requests to disable / reenable  </span></code></li><li class="L6"><code class="language-java"><span class="pln">                </span><span class="kwd">return</span><span class="pun">;</span><span class="pln">  </span></code></li><li class="L7"><code class="language-java"><span class="pln">            </span><span class="pun">}</span><span class="pln">  </span></code></li><li class="L8"><code class="language-java"></code></li><li class="L9"><code class="language-java"><span class="pln">            </span><span class="com">// hiding keyguard that is showing, remember to reshow later  </span></code></li><li class="L0"><code class="language-java"><span class="pln">            </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">DEBUG</span><span class="pun">)</span><span class="pln"> </span><span class="typ">Log</span><span class="pun">.</span><span class="pln">d</span><span class="pun">(</span><span class="pln">TAG</span><span class="pun">,</span><span class="pln"> </span><span class="str">"remembering to reshow, hiding keyguard, "</span><span class="pln">  </span></code></li><li class="L1"><code class="language-java"><span class="pln">                    </span><span class="pun">+</span><span class="pln"> </span><span class="str">"disabling status bar expansion"</span><span class="pun">);</span><span class="pln">  </span></code></li><li class="L2"><code class="language-java"><span class="pln">            mNeedToReshowWhenReenabled </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">;</span><span class="pln">  </span></code></li><li class="L3"><code class="language-java"><span class="pln">            hideLocked</span><span class="pun">();</span><span class="pln">  </span></code></li><li class="L4"><code class="language-java"><span class="pln">        </span><span class="pun">}</span><span class="pln"> </span><span class="kwd">else</span><span class="pln"> </span><span class="kwd">if</span><span class="pln"> </span><span class="pun">(</span><span class="pln">enabled </span><span class="pun">&amp;&amp;</span><span class="pln"> mNeedToReshowWhenReenabled</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{</span><span class="pln">  </span></code></li><li class="L5"><code class="language-java"><span class="pln">            </span><span class="pun">...</span><span class="pln"> </span><span class="pun">;</span><span class="pln"> </span></code></li><li class="L6"><code class="language-java"><span class="pln">        </span><span class="pun">}</span><span class="pln">  </span></code></li><li class="L7"><code class="language-java"><span class="pln">    </span><span class="pun">}</span><span class="pln">  </span></code></li></ol></pre>
+<pre><code>	mExternallyEnabled = enabled;  
+
+	if (!enabled &amp;&amp; mShowing) {  
+		if (mExitSecureCallback != null) {  
+			if (DEBUG) Log.d(TAG, "in process of verifyUnlock request, ignoring");  
+			// we're in the process of handling a request to verify the user  
+			// can get past the keyguard. ignore extraneous requests to disable / reenable  
+			return;  
+		}  
+
+		// hiding keyguard that is showing, remember to reshow later  
+		if (DEBUG) Log.d(TAG, "remembering to reshow, hiding keyguard, "  
+				+ "disabling status bar expansion");  
+		mNeedToReshowWhenReenabled = true;  
+		hideLocked();  
+	} else if (enabled &amp;&amp; mNeedToReshowWhenReenabled) {  
+		... ; 
+	}  
+}  
+</code></pre>
 
 <p>我们可以在我们需要修改这个值的地方来调用这个函数去修改.</p>
 
