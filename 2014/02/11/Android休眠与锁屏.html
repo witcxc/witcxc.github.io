@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--<meta http-equiv="refresh" content="100">-->
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>Android休眠与锁屏</title>
+<script type="text/javascript" src="../../../jquery-1.11.1.min.js"></script>
+<!--<meta content="width=device-width,user-scalable=no" name="viewport">-->
+<!--<meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>-->
+<meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=0.5, minimum-scale=0.1, maximum-scale=1.0"/>
+<!--<embed src="/bgmusic/bgs.mp3" width=100 height=50 type=audio/mpeg loop="true" autostart="true" hidden="true" >-->
+<!--<bgsound src="/bgmusic/bgs.mp3" loop="true">-->
+<style type="text/css">
+p.margin {margin: 20px 50% 10%}
+</style>
+<!-- syntax highlighting CSS -->
+<!--
+<link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+
+ Homepage CSS
+<link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
+ -->
+<link rel="stylesheet" href="/css/normalize.css" type="text/css" media="screen, projection" />
+</head>
+<body>
+<div class="page">
+	<div class="article">
+		<h1 class="title"> Android休眠与锁屏 </h1>
+		<div class="body">
+			<script type="text/javascript">
+var midino = Math.floor(Math.random()*3)+1;  
+var midins = ""+midino ;
+document.write('<audio controls="controls" autoplay="autoplay">');
+document.write('<source src="/bgmusic/bgs');
+document.write(midins);
+document.write('.mp3" type="audio/mpeg">');
+document.write('Your browser does not support the audio element.');
+document.write('</audio>')
+			</script>
+			<p>要禁用Android的锁屏,我们只要在程序中用代码实现。方法如下：  </p>
+
+<ul>
+  <li>
+    <p>方法一 <br />
+<code>java
+getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); setContentView(R.layout.main);   
+</code></p>
+  </li>
+  <li>
+    <p>方法二 <br />
+```java
+@Override<br />
+protected void onResume() {<br />
+  super.onResume();<br />
+  pManager = ((PowerManager) getSystemService(POWER_SERVICE));<br />
+  mWakeLock = pManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK<br />
+          | PowerManager.ON_AFTER_RELEASE, TAG);<br />
+  mWakeLock.acquire();<br />
+}  </p>
+  </li>
+</ul>
+
+<p>@Override<br />
+protected void onPause() {<br />
+	super.onPause();  </p>
+
+<pre><code>if(null != mWakeLock){  
+	mWakeLock.release();  
+}   }   ```
+</code></pre>
+
+<ul>
+  <li>
+    <p>方法三<br />
+```java
+public void unLock(){<br />
+  mContentResolver = getContentResolver();  </p>
+
+    <p>//不建议使用<br />
+  //setLockPatternEnabled(android.provider.Settings.System.LOCK_PATTERN_ENABLED,false);  </p>
+
+    <p>//推荐使用<br />
+  setLockPatternEnabled(android.provider.Settings.Secure.LOCK_PATTERN_ENABLED,false);<br />
+}  </p>
+  </li>
+</ul>
+
+<p>private void setLockPatternEnabled(String systemSettingKey, boolean enabled) {<br />
+	//不建议使用<br />
+	//android.provider.Settings.System.putInt(mContentResolver,systemSettingKey, enabled ? 1 : 0);  </p>
+
+<pre><code>//推荐使用  
+android.provider.Settings.Secure.putInt(mContentResolver, systemSettingKey,enabled ? 1 : 0);   }   //但注意要加权限AndroidManifest.xml文件中加入   //&lt;uses-permission android:name="android.permission.WRITE_SETTINGS" /&gt;   //还要特别注意的是要加入 android:sharedUserId="android.uid.system"，但有一个问题，   //如果加入了sharedUserId后就不能使用eclipse编译了，一定要手动通过 mm -B进行编译，然后把apk install到模拟器或设备中   ```
+</code></pre>
+
+<ul>
+  <li>禁用系统的锁频功能，这方法不建议使用，只有在适当的环境下适当使用既可</li>
+</ul>
+
+<p>Android系统的锁屏时间存放在Setting数据库中，字段为Settings.System.SCREEN_OFF_TIMEOUT。我们可以查看SettingsProvider源码，查看如下文件的源码如下：</p>
+
+<p>～/frameworks/base/packages/SettingsProvider/src/com/android/providers/settings/DatabaseHelper.java</p>
+
+<p>查看loadSystemSettings()函数的代码如下：
+<code>java
+private void loadSystemSettings(SQLiteDatabase db) {  
+	SQLiteStatement stmt = db.compileStatement("INSERT OR IGNORE INTO system(name,value)"  
+			+ " VALUES(?,?);");  
+	Resources r = mContext.getResources();  
+	loadBooleanSetting(stmt, Settings.System.DIM_SCREEN,  
+			R.bool.def_dim_screen);  
+	loadSetting(stmt, Settings.System.STAY_ON_WHILE_PLUGGED_IN,  
+			"1".equals(SystemProperties.get("ro.kernel.qemu")) ? 1 : 0);  
+	loadIntegerSetting(stmt, Settings.System.SCREEN_OFF_TIMEOUT,  
+			R.integer.def_screen_off_timeout);  
+	// Set default cdma emergency tone  
+	loadSetting(stmt, Settings.System.EMERGENCY_TONE, 0);  
+	// Set default cdma call auto retry  
+	loadSetting(stmt, Settings.System.CALL_AUTO_RETRY, 0);  
+	// Set default cdma DTMF type  
+	loadSetting(stmt, Settings.System.DTMF_TONE_TYPE_WHEN_DIALING, 0);  
+	// Set default hearing aid  
+	loadSetting(stmt, Settings.System.HEARING_AID, 0);  
+	// Set default tty mode  
+	loadSetting(stmt, Settings.System.TTY_MODE, 0);  
+	loadBooleanSetting(stmt, Settings.System.AIRPLANE_MODE_ON,  
+			R.bool.def_airplane_mode_on);  
+	loadStringSetting(stmt, Settings.System.AIRPLANE_MODE_RADIOS,  
+			R.string.def_airplane_mode_radios);  
+	loadStringSetting(stmt, Settings.System.AIRPLANE_MODE_TOGGLEABLE_RADIOS,  
+			R.string.airplane_mode_toggleable_radios);  
+	loadBooleanSetting(stmt, Settings.System.AUTO_TIME,  
+			R.bool.def_auto_time); // Sync time to NITZ  
+	loadIntegerSetting(stmt, Settings.System.SCREEN_BRIGHTNESS,  
+			R.integer.def_screen_brightness);  
+	loadBooleanSetting(stmt, Settings.System.SCREEN_BRIGHTNESS_MODE,  
+			R.bool.def_screen_brightness_automatic_mode);  
+	loadDefaultAnimationSettings(stmt);  
+	loadBooleanSetting(stmt, Settings.System.ACCELEROMETER_ROTATION,  
+			R.bool.def_accelerometer_rotation);  
+	loadDefaultHapticSettings(stmt);  
+	stmt.close();  
+}  
+</code></p>
+
+<p>Settings.System.SCREEN_OFF_TIMEOUT没有初始化的话（系统首次启动，这个字段肯定是没 有初始化的），系统将会利用资源中的R.integer.def_screen_off_timeout来初始化。我们为了让系统永不锁屏，只需要把资源 R.integer.def_screen_off_timeout设为-1即可。查看文件在这里：</p>
+
+<p>frameworks/base/packages/SettingsProvider/res/values/defaults.xml</p>
+
+<p>可以找到R.integer.def_screen_off_timeout的定义 
+<code>html
+&lt;integer name="def_screen_off_timeout"&gt;60000&lt;/integer&gt;
+</code>
+默认值为60000ms，也就是60s。我们只需要把这个参数改为-1。然后重新编译SettingsProvider模块，就OK了。</p>
+
+<p>但有时候也会有这样的情况发生，用户进入系统后，修改锁屏时间，为了这样的情况发生我们得在Setting模块中删除对锁屏时间的设置。这样Android设备就不锁屏了。</p>
+
+<p>我们这里还要处理一种情况，就是让系统一启动我们就禁用锁屏的功能，很简单，我们只要把系统锁屏功能的的初始默认开关给改以下就可以了，如下找到这个类：</p>
+
+<p>frameworks/policies/base/phone/com/android/internal/policy/impl/KeyguardViewMediator.java</p>
+
+<p>该文件中有一个变量定义如下：
+<code>java
+/** 
+ * External apps (like the phone app) can tell us to disable the keygaurd. 
+ */  
+private boolean mExternallyEnabled = true  
+</code>
+mExternallyEnabled是用来管理是否开启屏幕锁的关键。默认值是打开屏锁，根据注释可以知道他是希望应用程序来修改这个值，我们可以把这个值改成false就可以了。</p>
+
+<p>有时候我们不想修改这个初始值，那我们看看这个类有没有提供相应的方法来供外部修改这个值的，不出我们所料，看下面这段代码就是的了：
+```java
+/** 
+ * Same semantics as {@link WindowManagerPolicy#enableKeyguard}; provide 
+ * a way for external stuff to override normal keyguard behavior.  For instance 
+ * the phone app disables the keyguard when it receives incoming calls. 
+ */<br />
+public void setKeyguardEnabled(boolean enabled) {<br />
+	synchronized (this) {<br />
+		if (DEBUG) Log.d(TAG, “setKeyguardEnabled(“ + enabled + “)”);  </p>
+
+<pre><code>	mExternallyEnabled = enabled;  
+
+	if (!enabled &amp;&amp; mShowing) {  
+		if (mExitSecureCallback != null) {  
+			if (DEBUG) Log.d(TAG, "in process of verifyUnlock request, ignoring");  
+			// we're in the process of handling a request to verify the user  
+			// can get past the keyguard. ignore extraneous requests to disable / reenable  
+			return;  
+		}  
+
+		// hiding keyguard that is showing, remember to reshow later  
+		if (DEBUG) Log.d(TAG, "remembering to reshow, hiding keyguard, "  
+				+ "disabling status bar expansion");  
+		mNeedToReshowWhenReenabled = true;  
+		hideLocked();  
+	} else if (enabled &amp;&amp; mNeedToReshowWhenReenabled) {  
+		... ; 
+	}  
+}   ``` 我们可以在我们需要修改这个值的地方来调用这个函数去修改.
+</code></pre>
+
+<p>11 Feb 2014</p>
+
+		</div>
+
+	</div>
+</div>
+</body>
+</html>
