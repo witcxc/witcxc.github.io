@@ -46,44 +46,89 @@ document.write('</audio>')
 
 var c=document.getElementById("myCanvas");
 var cxt=c.getContext("2d");
-var x=20,y=30,r=15;
+var r=15;
+var x=Math.round(Math.random()*200)+r,y=Math.round(Math.random()*100)+r;
+var x2=Math.round(Math.random()*200)+4*r,y2=Math.round(Math.random()*200)+r;
+var w1=500-r,w2=0+r;
+var h1=300-r,h2=0+r;
 var sx=1,sy=1;
+var sx2=1,sy2=-1;
 var interTime = 5;
 var iID=setInterval(draw, interTime);
-function draw()
+function draw(){
+	drawOne();
+	drawTwo();
+	preDraw(cxt)
+	reDraw(x,y,r,cxt);
+	postDraw(cxt)
+}
+function drawOne()
 {
 	x+=sx;
 	y+=sy;
-	if(x==485&&y<285&&y>0){
+	if(x==w1&&y<h1&&y>h2){
 		sx=-sx;
-	}else if(x==485&&y==285){
+	}else if(x==w1&&y==h1){
 		sx=-sx;
 		sy=-sy;
-	}else if(x<485&&x>0&&y==285)
+	}else if(x<w1&&x>w2&&y==h1)
 	{
 		sy=-sy;
-	}else if(x==0&&y==285){
+	}else if(x==w2&&y==h1){
 		sx=-sx;
 		sy=-sy;
-	}else if(x==0&&y<285&&y>0){
+	}else if(x==w2&&y<h1&&y>h2){
 		sx=-sx;
-	}else if(x==0&&y==0){
+	}else if(x==w2&&y==h2){
 		sx=-sx;
 		sy=-sy;
-	}else if(y==0&&x>0&&x<485){
+	}else if(y==h2&&x>w2&&x<w1){
 		sy=-sy;
-	}else if(y==0&&x==485){
+	}else if(y==h2&&x==w1){
 		sx=-sx;
 		sy=-sy;
 	}
-	reDraw(x,y,r,cxt);
 }
-function reDraw(x,y,r,cxt)
+function drawTwo()
+{
+	x2+=sx2;
+	y2+=sy2;
+	if(x2==w1&&y2<h1&&y2>h2){
+		sx2=-sx2;
+	}else if(x2==w1&&y2==h1){
+		sx2=-sx2;
+		sy=-sy;
+	}else if(x2<w1&&x2>w2&&y2==h1)
+	{
+		sy2=-sy2;
+	}else if(x2==w2&&y2==h1){
+		sx2=-sx2;
+		sy=-sy;
+	}else if(x2==w2&&y2<h1&&y2>h2){
+		sx2=-sx2;
+	}else if(x2==w2&&y2==h2){
+		sx2=-sx2;
+		sy2=-sy2;
+	}else if(y2==h2&&x2>w2&&x2<w1){
+		sy2=-sy2;
+	}else if(y2==h2&&x2==w1){
+		sx2=-sx2;
+		sy2=-sy2;
+	}
+}
+function preDraw(cxt)
 {
 	cxt.fillStyle="#FF0000";
 	cxt.clearRect(0,0,500,300);
 	cxt.beginPath();
+}
+function reDraw(){
+
 	cxt.arc(x,y,r,0,Math.PI*2,true);
+	cxt.arc(x2,y2,r,0,Math.PI*2,true);
+}
+function postDraw(cxt)
+{
 	cxt.closePath();
 	cxt.fill();
 }
