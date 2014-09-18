@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!--<meta http-equiv="refresh" content="100">-->
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>碰碰球</title>
+<script type="text/javascript" src="../../../jquery-1.11.1.min.js"></script>
+<!--<meta content="width=device-width,user-scalable=no" name="viewport">-->
+<!--<meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>-->
+<meta name="viewport" content="width=device-width,target-densitydpi=high-dpi,initial-scale=0.5, minimum-scale=0.1, maximum-scale=1.0"/>
+<!--<embed src="/bgmusic/bgs.mp3" width=100 height=50 type=audio/mpeg loop="true" autostart="true" hidden="true" >-->
+<!--<bgsound src="/bgmusic/bgs.mp3" loop="true">-->
+<style type="text/css">
+p.margin {margin: 20px 50% 10%}
+</style>
+<!-- syntax highlighting CSS -->
+<!--
+<link rel="stylesheet" href="/css/syntax.css" type="text/css" />
+
+ Homepage CSS
+<link rel="stylesheet" href="/css/screen.css" type="text/css" media="screen, projection" />
+ -->
+<link rel="stylesheet" href="/css/normalize.css" type="text/css" media="screen, projection" />
+</head>
+<body>
+<div class="page">
+	<div class="article">
+		<h1 class="title"> 碰碰球 </h1>
+		<div class="body">
+			<script type="text/javascript">
+var midino = Math.floor(Math.random()*3)+1;  
+var midins = ""+midino ;
+document.write('<audio controls="controls" autoplay="autoplay">');
+document.write('<source src="/bgmusic/bgs');
+document.write(midins);
+document.write('.mp3" type="audio/mpeg">');
+document.write('Your browser does not support the audio element.');
+document.write('</audio>')
+			</script>
+			<p>随手写的一个小动画 ^_^</p>
+
+<canvas id="myCanvas" width="500" height="300" style="border:1px solid #c3c3c3;">
+	Your browser does not support the canvas element.
+</canvas>
+<script type="text/javascript">
+
+var c=document.getElementById("myCanvas");
+var cxt=c.getContext("2d");
+var r=15;
+var x=Math.round(Math.random()*200)+r,y=Math.round(Math.random()*100)+r;
+var x2=Math.round(Math.random()*200)+4*r,y2=Math.round(Math.random()*200)+r;
+var w1=500-r,w2=0+r;
+var h1=300-r,h2=0+r;
+var sx=1,sy=1;
+var sx2=1,sy2=-1;
+var interTime = 5;
+var iID=setInterval(draw, interTime);
+function draw(){
+	drawOne();
+	drawTwo();
+	preDraw(cxt)
+	reDraw(x,y,r,cxt);
+	postDraw(cxt)
+}
+function drawOne()
+{
+	x+=sx;
+	y+=sy;
+	if(x==w1&&y<h1&&y>h2){
+		sx=-sx;
+	}else if(x==w1&&y==h1){
+		sx=-sx;
+		sy=-sy;
+	}else if(x<w1&&x>w2&&y==h1)
+	{
+		sy=-sy;
+	}else if(x==w2&&y==h1){
+		sx=-sx;
+		sy=-sy;
+	}else if(x==w2&&y<h1&&y>h2){
+		sx=-sx;
+	}else if(x==w2&&y==h2){
+		sx=-sx;
+		sy=-sy;
+	}else if(y==h2&&x>w2&&x<w1){
+		sy=-sy;
+	}else if(y==h2&&x==w1){
+		sx=-sx;
+		sy=-sy;
+	}
+}
+function drawTwo()
+{
+	x2+=sx2;
+	y2+=sy2;
+	if(x2==w1&&y2<h1&&y2>h2){
+		sx2=-sx2;
+	}else if(x2==w1&&y2==h1){
+		sx2=-sx2;
+		sy=-sy;
+	}else if(x2<w1&&x2>w2&&y2==h1)
+	{
+		sy2=-sy2;
+	}else if(x2==w2&&y2==h1){
+		sx2=-sx2;
+		sy=-sy;
+	}else if(x2==w2&&y2<h1&&y2>h2){
+		sx2=-sx2;
+	}else if(x2==w2&&y2==h2){
+		sx2=-sx2;
+		sy2=-sy2;
+	}else if(y2==h2&&x2>w2&&x2<w1){
+		sy2=-sy2;
+	}else if(y2==h2&&x2==w1){
+		sx2=-sx2;
+		sy2=-sy2;
+	}
+}
+function preDraw(cxt)
+{
+	cxt.fillStyle="#FF0000";
+	cxt.clearRect(0,0,500,300);
+	cxt.beginPath();
+}
+function reDraw(){
+
+	cxt.arc(x,y,r,0,Math.PI*2,true);
+	cxt.arc(x2,y2,r,0,Math.PI*2,true);
+}
+function postDraw(cxt)
+{
+	cxt.closePath();
+	cxt.fill();
+}
+</script>
+
+<p>04 Aug 2014</p>
+
+		</div>
+
+	</div>
+</div>
+</body>
+</html>
