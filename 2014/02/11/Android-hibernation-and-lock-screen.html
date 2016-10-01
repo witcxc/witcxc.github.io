@@ -34,16 +34,16 @@ document.write('.mp3" type="audio/mpeg">');
 document.write('Your browser does not support the audio element.');
 document.write('</audio>');
 			</script>
-			<p>要禁用Android的锁屏,我们只要在程序中用代码实现。方法如下：  </p>
+			<p>要禁用Android的锁屏,我们只要在程序中用代码实现。方法如下：</p>
 
 <ul>
-  <li>方法一 </li>
+  <li>方法一</li>
 </ul>
 
-<p>getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); setContentView(R.layout.main); </p>
+<p>getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); setContentView(R.layout.main);</p>
 
 <ul>
-  <li>方法二 </li>
+  <li>方法二</li>
 </ul>
 
 <p>@Override<br />
@@ -53,38 +53,41 @@ protected void onResume() {<br />
 	mWakeLock = pManager.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK<br />
 			| PowerManager.ON_AFTER_RELEASE, TAG);<br />
 	mWakeLock.acquire();<br />
-}  </p>
+}</p>
 
 <p>@Override<br />
 protected void onPause() {<br />
-	super.onPause();  </p>
+	super.onPause();</p>
 
-<pre><code>if(null != mWakeLock){  
+<div class="highlighter-rouge"><pre class="highlight"><code>if(null != mWakeLock){  
 	mWakeLock.release();  
 }   }
 </code></pre>
+</div>
 
 <ul>
-  <li>方法三  </li>
+  <li>方法三</li>
 </ul>
 
 <p>public void unLock(){<br />
-	mContentResolver = getContentResolver();  </p>
+	mContentResolver = getContentResolver();</p>
 
-<pre><code>//不建议使用  
+<div class="highlighter-rouge"><pre class="highlight"><code>//不建议使用  
 //setLockPatternEnabled(android.provider.Settings.System.LOCK_PATTERN_ENABLED,false);  
 
 //推荐使用  
 setLockPatternEnabled(android.provider.Settings.Secure.LOCK_PATTERN_ENABLED,false);   }  
 </code></pre>
+</div>
 
 <p>private void setLockPatternEnabled(String systemSettingKey, boolean enabled) {<br />
 	//不建议使用<br />
-	//android.provider.Settings.System.putInt(mContentResolver,systemSettingKey, enabled ? 1 : 0);  </p>
+	//android.provider.Settings.System.putInt(mContentResolver,systemSettingKey, enabled ? 1 : 0);</p>
 
-<pre><code>//推荐使用  
+<div class="highlighter-rouge"><pre class="highlight"><code>//推荐使用  
 android.provider.Settings.Secure.putInt(mContentResolver, systemSettingKey,enabled ? 1 : 0);   }   //但注意要加权限AndroidManifest.xml文件中加入   //&lt;uses-permission android:name="android.permission.WRITE_SETTINGS" /&gt;   //还要特别注意的是要加入 android:sharedUserId="android.uid.system"，但有一个问题，   //如果加入了sharedUserId后就不能使用eclipse编译了，一定要手动通过 mm -B进行编译，然后把apk install到模拟器或设备中  
 </code></pre>
+</div>
 
 <ul>
   <li>禁用系统的锁频功能，这方法不建议使用，只有在适当的环境下适当使用既可</li>
@@ -133,13 +136,13 @@ android.provider.Settings.Secure.putInt(mContentResolver, systemSettingKey,enabl
 			R.bool.def_accelerometer_rotation);<br />
 	loadDefaultHapticSettings(stmt);<br />
 	stmt.close();<br />
-}  </p>
+}</p>
 
 <p>Settings.System.SCREEN_OFF_TIMEOUT没有初始化的话（系统首次启动，这个字段肯定是没 有初始化的），系统将会利用资源中的R.integer.def_screen_off_timeout来初始化。我们为了让系统永不锁屏，只需要把资源 R.integer.def_screen_off_timeout设为-1即可。查看文件在这里：</p>
 
 <p>frameworks/base/packages/SettingsProvider/res/values/defaults.xml</p>
 
-<p>可以找到R.integer.def_screen_off_timeout的定义 </p>
+<p>可以找到R.integer.def_screen_off_timeout的定义</p>
 
 <integer name="def_screen_off_timeout">60000</integer>
 
@@ -156,7 +159,7 @@ android.provider.Settings.Secure.putInt(mContentResolver, systemSettingKey,enabl
 <p>/** 
  * External apps (like the phone app) can tell us to disable the keygaurd. 
  */<br />
-private boolean mExternallyEnabled = true  </p>
+private boolean mExternallyEnabled = true</p>
 
 <p>mExternallyEnabled是用来管理是否开启屏幕锁的关键。默认值是打开屏锁，根据注释可以知道他是希望应用程序来修改这个值，我们可以把这个值改成false就可以了。</p>
 
@@ -169,9 +172,9 @@ private boolean mExternallyEnabled = true  </p>
  */<br />
 public void setKeyguardEnabled(boolean enabled) {<br />
 	synchronized (this) {<br />
-		if (DEBUG) Log.d(TAG, “setKeyguardEnabled(“ + enabled + “)”);  </p>
+		if (DEBUG) Log.d(TAG, “setKeyguardEnabled(“ + enabled + “)”);</p>
 
-<pre><code>	mExternallyEnabled = enabled;  
+<div class="highlighter-rouge"><pre class="highlight"><code>	mExternallyEnabled = enabled;  
 
 	if (!enabled &amp;&amp; mShowing) {  
 		if (mExitSecureCallback != null) {  
@@ -191,6 +194,7 @@ public void setKeyguardEnabled(boolean enabled) {<br />
 	}  
 }  
 </code></pre>
+</div>
 
 <p>我们可以在我们需要修改这个值的地方来调用这个函数去修改.</p>
 
